@@ -2,25 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shoping_ui_sample/model/homescreen_moderl.dart';
+import 'package:shoping_ui_sample/model/productmodel.dart';
 
 class HomescreenController with ChangeNotifier {
-  Homescreenmodel? modelobj;
+  List<Productmodel> productlist = [];
   List cataorylist = [];
   bool isloading = false;
-
-  // Future<void> getproducts() async {
-  //   final url = Uri.parse("https://fakestoreapi.com/products");
-  //   try {
-  //     var responce = await http.get(url);
-  //     if (responce.statusCode == 200) {
-  //       modelobj = homescreenmodelFromJson(responce.body);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
+  bool isproductloading = false;
+  List<Map> allcatagortylist = [];
+  int selectedindex = 0;
   Future<void> getcatagories() async {
     isloading = true;
     notifyListeners();
@@ -41,16 +31,31 @@ class HomescreenController with ChangeNotifier {
     isloading = false;
   }
 
-  oncatagoryselection() {
-    List screens = [
-      Container(color: Colors.red),
-      Container(color: Colors.blue),
-      Container(color: Colors.green),
-      Container(color: Colors.yellow),
-      Container(color: Colors.orange),
-    ];
+  int selectedcatagoryindex = 0;
+  oncatagoryselection(int clickedindex) {
+    selectedcatagoryindex = clickedindex;
+    notifyListeners();
   }
 
-  getallProducts() {}
+  Future<void> getallProducts({String? catagoryindex}) async {
+    isproductloading = true;
+    notifyListeners();
+    final GetallproductsUrl = Uri.parse("https://fakestoreapi.com/products");
+    final catagorywiseurl =
+        Uri.parse("https://fakestoreapi.com/products/category/$catagoryindex");
+
+    try {
+      var responce = await http
+          .get(catagoryindex == "All" ? GetallproductsUrl : catagorywiseurl);
+      if (responce.statusCode == 200) {
+        productlist = productlistresponsemodelFromJson(responce.body);
+      }
+    } catch (e) {
+      print(e);
+    }
+    isproductloading = false;
+    notifyListeners();
+  }
+
   getproductBycatagory() {}
 }

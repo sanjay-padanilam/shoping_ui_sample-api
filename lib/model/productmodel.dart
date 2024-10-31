@@ -1,9 +1,13 @@
 import 'dart:convert';
 
-Homescreenmodel homescreenmodelFromJson(String str) =>
-    Homescreenmodel.fromJson(json.decode(str));
+List<Productmodel> productlistresponsemodelFromJson(String str) =>
+    List<Productmodel>.from(
+        json.decode(str).map((x) => Productmodel.fromJson(x)));
 
-class Homescreenmodel {
+String productlistresponsemodelToJson(List<Productmodel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class Productmodel {
   int? id;
   String? title;
   double? price;
@@ -12,7 +16,7 @@ class Homescreenmodel {
   String? image;
   Rating? rating;
 
-  Homescreenmodel({
+  Productmodel({
     this.id,
     this.title,
     this.price,
@@ -22,8 +26,7 @@ class Homescreenmodel {
     this.rating,
   });
 
-  factory Homescreenmodel.fromJson(Map<String, dynamic> json) =>
-      Homescreenmodel(
+  factory Productmodel.fromJson(Map<String, dynamic> json) => Productmodel(
         id: json["id"],
         title: json["title"],
         price: json["price"]?.toDouble(),
@@ -32,6 +35,16 @@ class Homescreenmodel {
         image: json["image"],
         rating: json["rating"] == null ? null : Rating.fromJson(json["rating"]),
       );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "title": title,
+        "price": price,
+        "description": description,
+        "category": category,
+        "image": image,
+        "rating": rating?.toJson(),
+      };
 }
 
 class Rating {
@@ -47,4 +60,9 @@ class Rating {
         rate: json["rate"]?.toDouble(),
         count: json["count"],
       );
+
+  Map<String, dynamic> toJson() => {
+        "rate": rate,
+        "count": count,
+      };
 }
