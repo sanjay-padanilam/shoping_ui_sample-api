@@ -45,8 +45,10 @@ class HomescreenController with ChangeNotifier {
         Uri.parse("https://fakestoreapi.com/products/category/$catagoryindex");
 
     try {
-      var responce = await http
-          .get(catagoryindex == "All" ? GetallproductsUrl : catagorywiseurl);
+      var responce = await http.get(
+          catagoryindex == null || catagoryindex == "All"
+              ? GetallproductsUrl
+              : catagorywiseurl);
       if (responce.statusCode == 200) {
         productlist = productlistresponsemodelFromJson(responce.body);
       }
